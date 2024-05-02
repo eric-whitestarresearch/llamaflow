@@ -1,0 +1,38 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: wait-runner
+spec:
+  template:
+    spec:
+      containers:
+      - name: wait-runner
+        image: ericwsr/runner-wait:1
+        env:
+        - name: WAIT_SECONDS
+          value: "30"
+        - name: POD_ID
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.name
+        - name: JOB_ID
+          value: wait-runner
+        - name: POSTBACK_HOST
+          valueFrom:
+            configMapKeyRef:
+              name: runner-postback-url
+              key: postback-url
+      restartPolicy: Never
+      imagePullSecrets:
+      - name: regcred
+  backoffLimit: 0
+  podFailurePolicy:
+    rules:
+    - action: FailJob
+      onExitCodes:
+        containerName: wait-runner  # optional
+        operator: NotIn             # one of: In, NotIn
+        values: [0]
+    - action: Ignore             # one of: Ignore, FailJob, Count
+      onPodConditions:
+      - type: DisruptionTarget   # indicates Pod disruption
