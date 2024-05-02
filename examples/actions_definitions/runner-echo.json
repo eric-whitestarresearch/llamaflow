@@ -1,0 +1,9 @@
+{
+    "namespace": "core",
+    "action_name": "echo",
+    "version": 1,
+    "container_repo": "ericwsr",
+    "container_name": "runner-echo",
+    "contianer_tag": "4",
+    "parameter_schema": "None, to be used later"
+}

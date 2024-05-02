@@ -19,12 +19,14 @@ import requests
 
 pod_id = os.environ['POD_ID']
 job_id = os.environ['JOB_ID']
+execution_id = os.environ['EXECUTION_ID']
 echo_data = os.environ["RUNNER_ARGS"]
-url = os.environ["POSTBACK_HOST"] + "/" + job_id
+url = os.environ["POSTBACK_BASE_URL"] + "/" + execution_id
 
 data = {
     "job_id": job_id,
     "pod_id": pod_id,
+    "execution_id": execution_id,
     "execution_status": "success",
     "execution_output": echo_data,
 }

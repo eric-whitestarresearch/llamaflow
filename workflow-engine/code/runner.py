@@ -21,17 +21,23 @@ import re
 from kubernetes import client, config, utils
 import yaml
 from urllib.parse import urlparse
+from bson.objectid import ObjectId
 
 def result(execution_id, runner_result):
-    #result_dict = json.loads(runner_result)
+    if not re.match('^[0-9a-f]{24}$',execution_id):
+        abort(406, "Execution id must be 24 chacters hexadecimal string with lowercase letters")
+
+    db_connection = Database("workflow-engine", "runnerExecution")
 
     runner_result['time'] = int(time.time())
+
     print(runner_result)
     print("The execution id is: " + execution_id)
 
-    db_connection = Database("workflow-engine", "runner-result")
-    result = db_connection.collection.insert_one(runner_result)
-    print("Insert Result: ", result.inserted_id)
+
+    query = {"_id": ObjectId(execution_id)}
+    result = db_connection.collection.update_one(query, {'$set':runner_result})
+    print("Insert Result: ", result.upserted_id)
 
 def get_execution(execution_id):
     """
@@ -171,7 +177,7 @@ def submit_execution(action_namespace, action_name, version, parameters):
                                     'value': execution_id
                                 }, {
                                     'name': 'POSTBACK_BASE_URL',
-                                    'value': callback_base_url
+                                    'valueFrom': {'configMapKeyRef': {'name': 'postback-url', 'key':'url'}}
                                 }
                             ]
                         }
@@ -203,8 +209,8 @@ def submit_execution(action_namespace, action_name, version, parameters):
         }
     }
    
-    #narf = utils.create_from_dict(k8s_client, job_dict, namespace="testing")
-    #print(narf)
+    narf = utils.create_from_dict(k8s_client, job_dict, namespace="testing")
+    print(narf)
 
 def do_something():
     submit_execution("core","echo",1,"ccc")

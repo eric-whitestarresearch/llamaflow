@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: postback-url
+data:
+  # property-like keys; each key maps to a simple value
+  url: "HOSTNAME:8000/api/runner/"

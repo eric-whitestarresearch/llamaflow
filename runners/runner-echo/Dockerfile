@@ -13,7 +13,7 @@
 #      See the License for the specific language governing permissions and
 #      limitations under the License.
 
-FROM python:3.10.13-slim-bookworm
+FROM python:3.12-slim-bookworm
 RUN mkdir /code
 COPY code /code
 RUN pip install -r /code/requirements.txt

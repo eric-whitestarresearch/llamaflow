@@ -1,0 +1,6 @@
+---
+architecture: standalone
+service:
+  type: NodePort
+  nodePorts:
+    mongodb: 32017

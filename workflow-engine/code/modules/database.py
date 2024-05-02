@@ -31,7 +31,7 @@ class Database:
         datbase (Database): The database the client is connected to
         collection (Collection): The collection that the client is connect to
     """
-    conf_home = "/opt/self-service-portal/conf"
+    conf_home = "/opt/llamaflow/conf"
 
     def __init__(self, database, collection) -> None:
         """
