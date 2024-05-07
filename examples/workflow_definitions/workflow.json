@@ -1,0 +1,22 @@
+{
+  "namespace":"testing",
+  "workflow_name": "test1",
+  "version": 1,
+  "entrypoint": "step1",
+  "workflow": {
+    "step1" : {
+      "action_namespace": "core",
+      "action_name": "echo",
+      "parameters": "This is step one",
+      "on_success": "step2",
+      "on_fail": "fail"
+    }, 
+    "step2" : {
+      "action_namespace": "core",
+      "action_name": "echo",
+      "parameters": "This is step two",
+      "on_success": "complete_workflow",
+      "on_fail": "fail"
+    }
+  }
+}
