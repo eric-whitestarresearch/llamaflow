@@ -1,0 +1,124 @@
+#     Llamaflow - A self service portal with runbook automation
+#     Copyright (C) 2024  Whitestar Research LLC
+#
+#     Licensed under the Apache License, Version 2.0 (the "License");
+#     you may not use this file except in compliance with the License.
+#     You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+#      Unless required by applicable law or agreed to in writing, software
+#      distributed under the License is distributed on an "AS IS" BASIS,
+#      WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+#      See the License for the specific language governing permissions and
+#      limitations under the License.
+
+openapi: 3.0.0
+info:
+  title: "RP Flask REST API"
+  description: "An API about people and notes"
+  version: "1.0.0"
+servers:
+  - url: "/api"
+
+components:
+  schemas:
+    Runner_result:
+      type: "object"
+      required:
+        - job_id
+        - pod_id
+        - execution_status
+        - execution_output
+      properties:
+        job_id:
+          type: "string"
+        pod_id:
+          type: "string"
+        execution_status:
+          type: "string"
+        execution_output:
+          type: "string"
+  parameters:
+    execution_id:
+      name: "execution_id"
+      description: "The execution ID of the job that submitted the runner"
+      in: path
+      required: True
+      schema:
+        type: "string"
+    bundle:
+      name: "bundle"
+      description: "The bundle the definition exists in"
+      in: path
+      required: True
+      schema:
+        type: "string"
+    name:
+      name: "name"
+      description: "The name of the definition to get"
+      in: path
+      required: True
+      schema:
+        type: "string"
+    version:
+      name: "version"
+      description: "The version of definition to get"
+      in: path
+      required: True
+      schema:
+        type: "integer"
+    
+paths:
+  /runner/dosomething:
+    get:
+      operationId: "runner.do_something"
+      responses:
+        "200":
+          description: "Something happened"
+  /runner/{execution_id}:
+    get:
+      operationId: "runner.get_execution"
+      tags: 
+        - "Runner"
+      summary: Gets the information for a action execution, including parameters and result
+      parameters:
+        - $ref: "#/components/parameters/execution_id"
+      responses:
+        "200":
+          description: "Successfully retrieved the execution information"
+    post:
+      operationId: "runner.result"
+      tags:
+        - "Runner"
+      summary: "Captures the result of the runner responce"
+      parameters:
+        - $ref: "#/components/parameters/execution_id"
+      requestBody:
+        description: "The result of the runner execution"
+        required: true
+        content:
+          application/json:
+            schema:
+              x-body-name: "runner_result"
+              $ref: "#/components/schemas/Runner_result"
+      responses:
+        "200":
+          description: "Successfully captured the result"
+  /workflow/{bundle}/{name}/{version}:
+    get:
+      operationId: "workflow.get_workflow_definition"
+      tags: 
+        - "Workflow"
+      summary: Gets the defination of a workflow
+      parameters:
+        - $ref: "#/components/parameters/bundle"
+        - $ref: "#/components/parameters/name"
+        - $ref: "#/components/parameters/version"
+      responses:
+        "200":
+          description: "Successfully retrieved the workflow definition"
+        "404":
+          description: "Workflow not found"
+        "406":
+          description: "Invalid workflow id"

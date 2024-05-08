@@ -10,6 +10,13 @@
             "request": "launch",
             "program": "${workspaceFolder}/workflow-engine/code/app.py",
             "console": "integratedTerminal"
+        },
+        {
+            "name": "Data Service - Debug",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/data-service/code/app.py",
+            "console": "integratedTerminal"
         }
     ]
 }
